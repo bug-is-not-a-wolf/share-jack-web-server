@@ -78,3 +78,6 @@ com_crashlytics_export_strings.xml
 crashlytics.properties
 crashlytics-build.properties
 fabric.properties
+
+# Idea files with local paths
+.idea/misc.xml
