@@ -1,18 +1,28 @@
 /**
  * Created by Konstantin on 03.12.2016.
  */
-function play() {
-    document.getElementById('demo').play();
-}
+var socket = io();
 
-function pause() {
-    document.getElementById('demo').pause();
-}
+$(function() {
+    $('.playButton').on('click', function () {
+        document.getElementById('demo').play();
+        socket.emit('play');
+    });
 
-function increaseVolume() {
-    document.getElementById('demo').volume+=0.1;
-}
+    $('.pauseButton').on('click', function () {
+        document.getElementById('demo').pause();
+        socket.emit('pause');
+    });
 
-function decreaseVolume() {
-    document.getElementById('demo').volume-=0.1;
-}
+    $('.increaseVolumeButton').on('click', function () {
+        document.getElementById('demo').volume+=0.1;
+        console.log(document.getElementById('demo').volume);
+        socket.emit('volumeChanged', document.getElementById('demo').volume);
+    });
+
+    $('.decreaseVolumeButton').on('click', function () {
+        document.getElementById('demo').volume-=0.1;
+        console.log(document.getElementById('demo').volume);
+        socket.emit('volumeChanged', document.getElementById('demo').volume);
+    });
+});

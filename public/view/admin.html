@@ -3,18 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <title>Admin</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
     <script src="../js/admin.js"></script>
 </head>
 <body>
     <p>Welcome to the admin page</p>
     <audio id="demo">
-        <source src="../audio/.." type="audio/mpeg">
+        <source src="../audio/ADC17605.mp3" type="audio/mpeg">
     </audio>
     <div>
-        <button onclick="play()">Play the Audio</button>
-        <button onclick="pause()">Pause the Audio</button>
-        <button onclick="decreaseVolume()">Decrease Volume</button>
-        <button onclick="increaseVolume()">Increase Volume</button>
+        <button class="playButton" >Play the Audio</button>
+        <button class="pauseButton">Pause the Audio</button>
+        <button class="decreaseVolumeButton" >Decrease Volume</button>
+        <button class="increaseVolumeButton">Increase Volume</button>
     </div>
 </body>
 </html>
