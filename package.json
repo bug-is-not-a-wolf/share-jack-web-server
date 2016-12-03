@@ -2,9 +2,8 @@
   "name": "audiostreamer",
   "version": "0.0.0",
   "private": true,
-  "scripts": {
-  },
+  "scripts": {},
   "dependencies": {
-
+    "express": "^4.14.0"
   }
 }
