@@ -7,7 +7,7 @@ var http = require('http').Server(app);
 var io = require('socket.io')(http);
 var path = require("path");
 
-var status = {
+status = {
   play: false,
   pause: false,
   volume: 1
@@ -22,7 +22,7 @@ app.get('/',function(req, res){
 io.on('connection', function(socket){
     console.log('Connection established...');
     socket.on('disconnect', function(){
-        console.log('Disconnected...');
+        console.log('Disconnected...');        
     });
     socket.on('play', function () {
        status.play = true;

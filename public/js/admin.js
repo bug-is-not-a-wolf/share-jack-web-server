@@ -6,6 +6,7 @@ var socket = io();
 
 $(function() {
     document.getElementById('demo').src = '/audio/ADC17605.mp3';
+
     $('.playButton').on('click', function () {
         document.getElementById('demo').play();
         socket.emit('play');
@@ -30,5 +31,12 @@ $(function() {
 
     socket.on('status', function(stat){
         $('#status').append($('<li>').text(stat.play + ' ' + stat.pause + ' ' + stat.volume));
+        if(stat.play) {
+            document.getElementById('demo').play();
+        } else {
+            document.getElementById('demo').pause();
+        }
+        document.getElementById('demo').volume = stat.volume;
+        console.log(stat);
     });
 });
