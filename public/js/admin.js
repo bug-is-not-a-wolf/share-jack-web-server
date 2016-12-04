@@ -5,38 +5,42 @@ var socket = io();
 
 
 $(function() {
-    document.getElementById('demo').src = '/audio/ADC17605.mp3';
+
+    var audio = document.getElementById('demo');
+
+    audio.src = '/audio/ADC17605.mp3';
+
 
     $('.playButton').on('click', function () {
-        document.getElementById('demo').play();
+        audio.play();
         socket.emit('play');
     });
 
     $('.pauseButton').on('click', function () {
-        document.getElementById('demo').pause();
+        audio.pause();
         socket.emit('pause');
     });
 
     $('.increaseVolumeButton').on('click', function () {
-        document.getElementById('demo').volume+=0.1;
-        console.log(document.getElementById('demo').volume);
-        socket.emit('volumeChanged', document.getElementById('demo').volume);
+        audio.volume+=0.1;
+        console.log(audio.volume);
+        socket.emit('volumeChanged', audio.volume);
     });
 
     $('.decreaseVolumeButton').on('click', function () {
-        document.getElementById('demo').volume-=0.1;
-        console.log(document.getElementById('demo').volume);
-        socket.emit('volumeChanged', document.getElementById('demo').volume);
+        audio.volume-=0.1;
+        console.log(audio.volume);
+        socket.emit('volumeChanged', audio.volume);
     });
 
     socket.on('status', function(stat){
         $('#status').append($('<li>').text(stat.play + ' ' + stat.pause + ' ' + stat.volume));
         if(stat.play) {
-            document.getElementById('demo').play();
+            audio.play();
         } else {
-            document.getElementById('demo').pause();
+            audio.pause();
         }
-        document.getElementById('demo').volume = stat.volume;
+        audio.volume = stat.volume;
         console.log(stat);
     });
 });
