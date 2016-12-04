@@ -6,10 +6,9 @@ var socket = io();
 
 $(function() {
 
-    var audio = document.getElementById('demo');
+    var audio = document.getElementById('audio');
 
     audio.src = '/audio/ADC17605.mp3';
-
 
     $('.playButton').on('click', function () {
         audio.play();
