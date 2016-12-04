@@ -27,16 +27,19 @@ io.on('connection', function(socket){
     socket.on('play', function () {
        status.play = true;
        status.pause = false;
-       console.log('Playing... ' + status.play)
+       console.log('Playing... ' + status.play);
+       io.emit('status', status);
     });
     socket.on('pause', function () {
         status.play = false;
         status.pause = true;
-        console.log('Stopping... ' + status.pause)
+        console.log('Stopping... ' + status.pause);
+        io.emit('status', status);
     });
     socket.on('volumeChanged', function (data) {
         status.volume = data;
-        console.log('Volume was changed to ' + data)
+        console.log('Volume was changed to ' + data);
+        io.emit('status', status);
     });
 });
 
