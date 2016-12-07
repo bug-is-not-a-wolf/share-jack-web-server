@@ -7,13 +7,15 @@ var socket = io();
 $(function() {
 
     var audio = document.getElementById('audio');
+    var segmentEnd = 0;
+
 
     audio.controls = true;
 
     audio.src = '/audio/ADC17605.mp3';
 
     $('.playButton').on('click', function () {
-        audio.play();
+        playSegment(4, 30);
         socket.emit('play', audio.currentTime);
     });
 
@@ -45,4 +47,17 @@ $(function() {
         audio.currentTime = stat.currentTime;
         console.log(stat);
     });
+
+    function playSegment(start, end) {
+        segmentEnd = end;
+        audio.currentTime = start;
+        audio.play();
+    }
+
+    audio.addEventListener('timeupdate', function () {
+        if (segmentEnd && audio.currentTime >= segmentEnd) {
+            audio.pause();
+        }
+    }, false);
 });
+
