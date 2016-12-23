@@ -1,12 +1,12 @@
 'use strict';
 
-var express = require('express');
-var app = express();
-var http = require('http');
-var httpsServer = require('https').Server(app);
-var io = require('socket.io')(httpsServer);
-var path = require("path");
-var fs = require('fs');
+const express = require('express');
+const app = express();
+const http = require('http');
+const httpsServer = require('https').Server(app);
+const io = require('socket.io')(httpsServer);
+const path = require("path");
+const fs = require('fs');
 
 app.use(express.static('public'));
 
@@ -31,7 +31,7 @@ app.get('/stream', (clientReq, clientRes) => {
     clientReq.pipe(proxyReq);
   });
 
-var status = {
+let status = {
     play: false,
     pause: false,
     volume: 1,
@@ -68,7 +68,7 @@ io.on('connection', function(socket){
     });
 });
 
-var options = {
+let options = {
     key: fs.readFileSync('keys/private.key'),
     cert: fs.readFileSync('keys/certificate.crt')
 };
