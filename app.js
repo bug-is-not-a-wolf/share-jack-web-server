@@ -3,11 +3,14 @@
  */
 var express = require('express');
 var app = express();
-var https = require('https');
+var fs = require('fs');
+var options = {
+    key: fs.readFileSync('keys/private.key'),
+    cert: fs.readFileSync('keys/certificate.crt')
+};
+var https = require('https').Server(options, app);
 var io = require('socket.io')(https);
 var path = require("path");
-var fs = require('fs');
-
 
 var status = {
     play: false,
@@ -18,13 +21,6 @@ var status = {
 app.use(express.static('public'));
 
 app.get('/',function(req, res){
-    const options = {
-        hostname: 'stream.basso.fi',
-        port: '3000',
-        path: req.url,
-        method: req.method,
-        headers: req.headers
-    };
     res.sendFile(path.join(__dirname + '/public/view/admin.html'));
 });
 
@@ -57,14 +53,10 @@ io.on('connection', function(socket){
     });
 });
 
-var options = {
-    key: fs.readFileSync('keys/private.key'),
-    cert: fs.readFileSync('keys/certificate.crt')
-};
 
 
 
-https.createServer(options, app).listen(3000, function () {
+https.listen(3000, function () {
     console.log("Running at Port 3000");
 });
 
