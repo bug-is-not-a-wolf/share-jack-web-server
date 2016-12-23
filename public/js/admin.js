@@ -1,21 +1,16 @@
-/**
- * Created by Konstantin on 03.12.2016.
- */
 var socket = io();
-
 
 $(function() {
 
     var audio = document.getElementById('audio');
     var segmentEnd = 0;
 
-
     audio.controls = true;
 
-    audio.src = '/audio/ADC17605.mp3';
+    audio.src = '/stream';
 
     $('.playButton').on('click', function () {
-        playSegment(4, 30);
+		audio.play();
         socket.emit('play', audio.currentTime);
     });
 
@@ -37,12 +32,8 @@ $(function() {
     });
 
     socket.on('status', function(stat){
-        $('#status').append($('<li>').text(stat.play + ' ' + stat.pause + ' ' + stat.volume + ' ' + stat.currentTime));
-        if(stat.play) {
-            audio.play();
-        } else {
-            audio.pause();
-        }
+//        $('#status').append($('<li>').text(stat.play + ' ' + stat.pause + ' ' + stat.volume + ' ' + stat.currentTime));
+		stat.play ? audio.play() : audio.pause();
         audio.volume = stat.volume;
         audio.currentTime = stat.currentTime;
         console.log(stat);
@@ -59,5 +50,7 @@ $(function() {
             audio.pause();
         }
     }, false);
+	
+	audio.play();
 });
 

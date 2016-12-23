@@ -1,10 +1,10 @@
-/**
- * Created by Konstantin on 03.12.2016.
- */
+'use strict';
+
 var express = require('express');
 var app = express();
-var http = require('http').Server(app);
-var io = require('socket.io')(http);
+var http = require('http');
+var httpServer = require('http').Server(app);
+var io = require('socket.io')(httpServer);
 var path = require("path");
 
 var status = {
@@ -18,6 +18,23 @@ app.use(express.static('public'));
 app.get('/',function(req, res){
     res.sendFile(path.join(__dirname + '/public/view/admin.html'));
 });
+
+app.get('/stream', (clientReq, clientRes) => {
+    const options = {
+      hostname: 'stream.basso.fi',
+      port: '8000',
+      path: clientReq.url,
+      method: clientReq.method,
+      headers: clientReq.headers,
+    };
+	
+    const proxyReq = http.request(options,  (proxyRes) => {
+      proxyRes.pipe(clientRes);
+      clientRes.writeHead(proxyRes.statusCode, proxyRes.headers);
+    });
+
+    clientReq.pipe(proxyReq);
+  });
 
 io.on('connection', function(socket){
     console.log('Connection established...');
@@ -48,6 +65,6 @@ io.on('connection', function(socket){
     });
 });
 
-http.listen(8080);
+httpServer.listen(8080);
 
 console.log("Running at Port 8080");
