@@ -3,9 +3,11 @@
  */
 var express = require('express');
 var app = express();
-var http = require('http').Server(app);
-var io = require('socket.io')(http);
+var https = require('https');
+var io = require('socket.io')(https);
 var path = require("path");
+var fs = require('fs');
+
 
 var status = {
     play: false,
@@ -24,7 +26,7 @@ io.on('connection', function(socket){
     console.log(status);
     //io.emit('status', status);
     socket.on('disconnect', function(){
-        console.log('Disconnected...');        
+        console.log('Disconnected...');
     });
     socket.on('play', function (time) {
        status.play = true;
@@ -48,6 +50,14 @@ io.on('connection', function(socket){
     });
 });
 
-http.listen(8080);
+var options = {
+    key: fs.readFileSync('keys/private.key'),
+    cert: fs.readFileSync('keys/certificate.crt')
+};
 
-console.log("Running at Port 8080");
+
+
+https.createServer(options, app).listen(3000, function () {
+    console.log("Running at Port 3000");
+});
+
