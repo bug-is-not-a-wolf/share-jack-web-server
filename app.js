@@ -18,6 +18,13 @@ var status = {
 app.use(express.static('public'));
 
 app.get('/',function(req, res){
+    const options = {
+        hostname: 'stream.basso.fi',
+        port: '3000',
+        path: req.url,
+        method: req.method,
+        headers: req.headers
+    };
     res.sendFile(path.join(__dirname + '/public/view/admin.html'));
 });
 
