@@ -8,23 +8,9 @@ var io = require('socket.io')(httpsServer);
 var path = require("path");
 var fs = require('fs');
 
-
-var status = {
-    play: false,
-    pause: false,
-    volume: 1,
-    currentTime: 0
-};
 app.use(express.static('public'));
 
 app.get('/',function(req, res){
-    const options = {
-        hostname: 'stream.basso.fi',
-        port: '3000',
-        path: req.url,
-        method: req.method,
-        headers: req.headers
-    };
     res.sendFile(path.join(__dirname + '/public/view/admin.html'));
 });
 
@@ -45,6 +31,14 @@ app.get('/stream', (clientReq, clientRes) => {
     clientReq.pipe(proxyReq);
   });
 
+var status = {
+    play: false,
+    pause: false,
+    volume: 1,
+    currentTime: 0
+};
+
+  
 io.on('connection', function(socket){
     console.log('Connection established...');
     console.log(status);
