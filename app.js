@@ -53,10 +53,7 @@ io.on('connection', function(socket){
     });
 });
 
-
-
-
-https.listen(3000, function () {
-    console.log("Running at Port 3000");
+https.listen(443, function () {
+    console.log("Running at Port 443");
 });
 
