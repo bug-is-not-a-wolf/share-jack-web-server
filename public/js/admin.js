@@ -27,7 +27,7 @@ $(function() {
         console.log(audio.volume);
         socket.emit('volumeChanged', audio.volume, audio.currentTime);
     });
-
+	
     socket.on('status', function(stat){
         console.log(stat);
         $('#status').append($('<li>').text(JSON.stringify(stat)));

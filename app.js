@@ -16,25 +16,13 @@ const httpServer = http.createServer(app).listen(80);
 const httpsServer = https.createServer(httpsOptions, app).listen(443);
 const io = require('socket.io')(httpsServer);
 
+app.use(express.static('public/view'));
 app.use(express.static('public'));
 
 app.all('*', function ensureSecure(req, res, next) {
     if (req.secure) return next();
     res.redirect('https://' + req.hostname + req.url);
 });
-
-app.get('/',function(req, res){
-    res.sendFile(path.join(__dirname + '/public/view/main.html'));
-});
-
-app.get('/user',function(req, res){
-    res.sendFile(path.join(__dirname + '/public/view/user.html'));
-});
-
-app.get('/admin',function(req, res){
-    res.sendFile(path.join(__dirname + '/public/view/admin.html'));
-});
-
 
 let status = {
     isPlaying: false,
