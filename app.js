@@ -23,9 +23,18 @@ app.all('*', function ensureSecure(req, res, next) {
     res.redirect('https://' + req.hostname + req.url);
 });
 
-app.get('/', function (req, res) {
+app.get('/',function(req, res){
+    res.sendFile(path.join(__dirname + '/public/view/main.html'));
+});
+
+app.get('/user',function(req, res){
+    res.sendFile(path.join(__dirname + '/public/view/user.html'));
+});
+
+app.get('/admin',function(req, res){
     res.sendFile(path.join(__dirname + '/public/view/admin.html'));
 });
+
 
 let status = {
     isPlaying: false,
@@ -34,7 +43,7 @@ let status = {
 };
 let statusChangeTime = Date.now();
 
-io.on('connection', function (socket) {
+io.on('connection', function(socket){
     console.log('Connection established...');
 
 	if(status.isPlaying) {
