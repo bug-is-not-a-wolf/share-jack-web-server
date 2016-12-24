@@ -18,8 +18,6 @@ const io = require('socket.io')(httpsServer);
 
 app.use(express.static('public'));
 
-console.log();
-
 app.all('*', function ensureSecure(req, res, next) {
     if (req.secure) return next();
     res.redirect('https://' + req.hostname + req.url);
