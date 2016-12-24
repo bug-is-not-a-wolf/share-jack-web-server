@@ -1,6 +1,3 @@
-/**
- * Created by Konstantin on 03.12.2016.
- */
 var express = require('express');
 var app = express();
 var fs = require('fs');
@@ -20,23 +17,23 @@ var status = {
 };
 app.use(express.static('public'));
 
-app.get('/',function(req, res){
+app.get('/', function (req, res) {
     res.sendFile(path.join(__dirname + '/public/view/admin.html'));
 });
 
-io.on('connection', function(socket){
+io.on('connection', function (socket) {
     console.log('Connection established...');
     console.log(status);
     //io.emit('status', status);
-    socket.on('disconnect', function(){
+    socket.on('disconnect', function () {
         console.log('Disconnected...');
     });
     socket.on('play', function (time) {
-       status.play = true;
-       status.pause = false;
-       status.currentTime = time;
-       console.log('Playing... ' + status.play);
-       io.emit('status', status);
+        status.play = true;
+        status.pause = false;
+        status.currentTime = time;
+        console.log('Playing... ' + status.play);
+        io.emit('status', status);
     });
     socket.on('pause', function (time) {
         status.play = false;
@@ -45,7 +42,7 @@ io.on('connection', function(socket){
         console.log('Stopping... ' + status.pause);
         io.emit('status', status);
     });
-    socket.on('volumeChanged', function (volume , time) {
+    socket.on('volumeChanged', function (volume, time) {
         status.volume = volume;
         status.currentTime = time;
         console.log('Volume was changed to ' + volume);
