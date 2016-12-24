@@ -10,7 +10,7 @@ $(function() {
     var segmentEnd = 0;
 
 
-    audio.controls = true;
+    //audio.controls = true;
 
     audio.src = '/audio/ADC17605.mp3';
 
