@@ -7,7 +7,8 @@ const express = require('express');
 
 const httpsOptions = {
     key: fs.readFileSync('keys/private.key'),
-    cert: fs.readFileSync('keys/certificate.crt')
+    cert: fs.readFileSync('keys/certificate.crt'),
+    ca: fs.readFileSync('keys/ca_bundle.crt')
 };
 
 const app = express();
