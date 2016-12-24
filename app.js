@@ -1,25 +1,30 @@
-var express = require('express');
-var app = express();
-var fs = require('fs');
-var options = {
+'use strict';
+const fs = require('fs');
+const https = require('https');
+const path = require('path');
+const express = require('express');
+
+const httpsOptions = {
     key: fs.readFileSync('keys/private.key'),
     cert: fs.readFileSync('keys/certificate.crt')
 };
-var https = require('https').Server(options, app);
-var io = require('socket.io')(https);
-var path = require("path");
 
-var status = {
-    play: false,
-    pause: false,
-    volume: 1,
-    currentTime: 0
-};
+const app = express();
+const httpsServer = https.createServer(httpsOptions, app).listen(443);
+const io = require('socket.io')(httpsServer);
+
 app.use(express.static('public'));
 
 app.get('/', function (req, res) {
     res.sendFile(path.join(__dirname + '/public/view/admin.html'));
 });
+
+let status = {
+    play: false,
+    pause: false,
+    volume: 1,
+    currentTime: 0
+};
 
 io.on('connection', function (socket) {
     console.log('Connection established...');
@@ -49,8 +54,3 @@ io.on('connection', function (socket) {
         io.emit('status', status);
     });
 });
-
-https.listen(443, function () {
-    console.log("Running at Port 443");
-});
-
