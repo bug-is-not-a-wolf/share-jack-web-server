@@ -1,10 +1,22 @@
 {
-  "name": "audiostreamer",
-  "version": "0.0.0",
+  "name": "share-jack--audio-streamer",
+  "version": "0.2.0",
   "private": true,
-  "scripts": {},
+  "scripts": {"start" : "node app.js"},
   "dependencies": {
     "express": "^4.14.0",
     "socket.io": "latest"
-  }
+  },
+  "main": "app.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/bug-is-not-a-wolf/share-jack-web-server.git"
+  },
+  "author": "Vladislav Volivec'kiy <Vladislav.Voliveckiy@gmail.com>, Konstantin Kharlambov",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/bug-is-not-a-wolf/share-jack-web-server/issues"
+  },
+  "homepage": "https://github.com/bug-is-not-a-wolf/share-jack-web-server#readme",
+  "description": ""
 }
