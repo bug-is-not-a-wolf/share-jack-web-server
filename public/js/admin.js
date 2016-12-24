@@ -1,21 +1,15 @@
-/**
- * Created by Konstantin on 03.12.2016.
- */
-var socket = io();
-
+'use strict';
+let socket = io();
 
 $(function() {
-
-    var audio = document.getElementById('audio');
-    var segmentEnd = 0;
-
+    let audio = document.getElementById('audio');
 
     audio.controls = true;
-
     audio.src = '/audio/ADC17605.mp3';
+    audio.loop = true;
 
     $('.playButton').on('click', function () {
-        playSegment(4, 30);
+        audio.play()
         socket.emit('play', audio.currentTime);
     });
 
@@ -37,27 +31,11 @@ $(function() {
     });
 
     socket.on('status', function(stat){
-        $('#status').append($('<li>').text(stat.play + ' ' + stat.pause + ' ' + stat.volume + ' ' + stat.currentTime));
-        if(stat.play) {
-            audio.play();
-        } else {
-            audio.pause();
-        }
+        console.log(stat);
+        $('#status').append($('<li>').text(JSON.stringify(stat)));
         audio.volume = stat.volume;
         audio.currentTime = stat.currentTime;
-        console.log(stat);
+        stat.isPlaying ? audio.play() : audio.pause();
     });
-
-    function playSegment(start, end) {
-        segmentEnd = end;
-        audio.currentTime = start;
-        audio.play();
-    }
-
-    audio.addEventListener('timeupdate', function () {
-        if (segmentEnd && audio.currentTime >= segmentEnd) {
-            audio.pause();
-        }
-    }, false);
 });
 

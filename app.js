@@ -27,34 +27,35 @@ app.get('/', function (req, res) {
     res.sendFile(path.join(__dirname + '/public/view/admin.html'));
 });
 
-let status = {
-    play: false,
-    pause: false,
+var status = {
+    isPlaying: false,
     volume: 1,
-    currentTime: 0
+    currentTime: 0	// TODO: update the current time for new clients
 };
 
 io.on('connection', function (socket) {
     console.log('Connection established...');
     console.log(status);
-    //io.emit('status', status);
-    socket.on('disconnect', function () {
+    socket.emit('status', status);		
+	
+	socket.on('disconnect', function () {
         console.log('Disconnected...');
     });
-    socket.on('play', function (time) {
-        status.play = true;
-        status.pause = false;
+    
+	socket.on('play', function (time) {
+        status.isPlaying = true;
         status.currentTime = time;
-        console.log('Playing... ' + status.play);
+        console.log('Playing... ');
         io.emit('status', status);
     });
-    socket.on('pause', function (time) {
-        status.play = false;
-        status.pause = true;
+    
+	socket.on('pause', function (time) {
+        status.isPlaying = false;
         status.currentTime = time;
-        console.log('Stopping... ' + status.pause);
+        console.log('Stopping... ');
         io.emit('status', status);
     });
+	
     socket.on('volumeChanged', function (volume, time) {
         status.volume = volume;
         status.currentTime = time;
