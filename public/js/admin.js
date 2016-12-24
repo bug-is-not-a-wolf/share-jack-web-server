@@ -6,9 +6,10 @@ $(function() {
 
     audio.controls = true;
     audio.src = '/audio/ADC17605.mp3';
+    audio.loop = true;
 
     $('.playButton').on('click', function () {
-		audio.play()
+        audio.play()
         socket.emit('play', audio.currentTime);
     });
 
@@ -30,7 +31,7 @@ $(function() {
     });
 
     socket.on('status', function(stat){
-        console.log(stat, '1');
+        console.log(stat);
         $('#status').append($('<li>').text(JSON.stringify(stat)));
         audio.volume = stat.volume;
         audio.currentTime = stat.currentTime;
