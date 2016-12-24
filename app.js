@@ -5,43 +5,47 @@ var options = {
     key: fs.readFileSync('keys/private.key'),
     cert: fs.readFileSync('keys/certificate.crt')
 };
-var https = require('https').Server(options, app);
-var io = require('socket.io')(https);
+var httpsServer = require('https').Server(options, app);
+      // TODO: fix some server-side troubles...  // TODO: Write meaningful TODO
+var io = require('socket.io')(httpsServer);
 var path = require("path");
 
-var status = {
-    play: false,
-    pause: false,
-    volume: 1,
-    currentTime: 0
-};
 app.use(express.static('public'));
 
 app.get('/', function (req, res) {
     res.sendFile(path.join(__dirname + '/public/view/admin.html'));
 });
 
+var status = {
+    isPlaying: false,
+    volume: 1,
+    currentTime: 0	// TODO: update the current time for new clients
+};
+
+
 io.on('connection', function (socket) {
     console.log('Connection established...');
     console.log(status);
-    //io.emit('status', status);
-    socket.on('disconnect', function () {
+    socket.emit('status', status);		
+	
+	socket.on('disconnect', function () {
         console.log('Disconnected...');
     });
-    socket.on('play', function (time) {
-        status.play = true;
-        status.pause = false;
+    
+	socket.on('play', function (time) {
+        status.isPlaying = true;
         status.currentTime = time;
-        console.log('Playing... ' + status.play);
+        console.log('Playing... ');
         io.emit('status', status);
     });
-    socket.on('pause', function (time) {
-        status.play = false;
-        status.pause = true;
+    
+	socket.on('pause', function (time) {
+        status.isPlaying = false;
         status.currentTime = time;
-        console.log('Stopping... ' + status.pause);
+        console.log('Stopping... ');
         io.emit('status', status);
     });
+	
     socket.on('volumeChanged', function (volume, time) {
         status.volume = volume;
         status.currentTime = time;
@@ -50,7 +54,7 @@ io.on('connection', function (socket) {
     });
 });
 
-https.listen(443, function () {
-    console.log("Running at Port 443");
+httpsServer.listen(443, function () {
+    console.log('Running at Port', httpsServer.address().port);
 });
 
