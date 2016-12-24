@@ -17,6 +17,8 @@ const io = require('socket.io')(httpsServer);
 
 app.use(express.static('public'));
 
+console.log();
+
 app.all('*', function ensureSecure(req, res, next) {
     if (req.secure) return next();
     res.redirect('https://' + req.hostname + req.url);
@@ -26,14 +28,26 @@ app.get('/', function (req, res) {
     res.sendFile(path.join(__dirname + '/public/view/admin.html'));
 });
 
-var status = {
+let status = {
     isPlaying: false,
     volume: 1,
-    currentTime: 0	// TODO: update the current time for new clients
+    currentTime: 0
 };
+let statusChangeTime = Date.now();
 
 io.on('connection', function (socket) {
     console.log('Connection established...');
+
+	if(status.isPlaying) {
+		let timeDiff = (Date.now() - statusChangeTime) / 1000;
+		statusChangeTime = Date.now()
+		status.currentTime += timeDiff;
+		
+		if(status.currentTime >= 214) {		// TODO: change magic number to .currentAudioLength() (seconds)
+			status.isPlaying = false;
+		}
+	}
+	
     console.log(status);
     socket.emit('status', status);		
 	
@@ -44,6 +58,8 @@ io.on('connection', function (socket) {
 	socket.on('play', function (time) {
         status.isPlaying = true;
         status.currentTime = time;
+		statusChangeTime = Date.now()
+
         console.log('Playing... ');
         io.emit('status', status);
     });

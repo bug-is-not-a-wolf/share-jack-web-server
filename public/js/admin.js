@@ -6,7 +6,6 @@ $(function() {
 
     audio.controls = true;
     audio.src = '/audio/ADC17605.mp3';
-    audio.loop = true;
 
     $('.playButton').on('click', function () {
         audio.play()
