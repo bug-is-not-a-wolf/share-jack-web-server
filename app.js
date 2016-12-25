@@ -16,6 +16,7 @@ const httpServer = http.createServer(app).listen(80);
 const httpsServer = https.createServer(httpsOptions, app).listen(443);
 const io = require('socket.io')(httpsServer);
 
+app.use(express.static('public/view'));
 app.use(express.static('public'));
 
 app.all('*', function ensureSecure(req, res, next) {
@@ -23,39 +24,49 @@ app.all('*', function ensureSecure(req, res, next) {
     res.redirect('https://' + req.hostname + req.url);
 });
 
-app.get('/', function (req, res) {
-    res.sendFile(path.join(__dirname + '/public/view/admin.html'));
-});
-
-var status = {
+let status = {
     isPlaying: false,
     volume: 1,
-    currentTime: 0	// TODO: update the current time for new clients
+    currentTime: 0
 };
+let statusChangeTime = Date.now();
 
 io.on('connection', function (socket) {
     console.log('Connection established...');
-    console.log(status);
-    socket.emit('status', status);
 
-    socket.on('disconnect', function () {
+	if(status.isPlaying) {
+		let timeDiff = (Date.now() - statusChangeTime) / 1000;
+		statusChangeTime = Date.now()
+		status.currentTime += timeDiff;
+
+		if(status.currentTime >= 214) {		// TODO: change magic number to .currentAudioLength() (seconds)
+			status.isPlaying = false;
+		}
+	}
+
+    console.log(status);
+    socket.emit('status', status);		
+	
+	socket.on('disconnect', function () {
         console.log('Disconnected...');
     });
-
-    socket.on('play', function (time) {
+    
+	socket.on('play', function (time) {
         status.isPlaying = true;
         status.currentTime = time;
+		statusChangeTime = Date.now()
+
         console.log('Playing... ');
         io.emit('status', status);
     });
-
-    socket.on('pause', function (time) {
+    
+	socket.on('pause', function (time) {
         status.isPlaying = false;
         status.currentTime = time;
         console.log('Stopping... ');
         io.emit('status', status);
     });
-
+	
     socket.on('volumeChanged', function (volume, time) {
         status.volume = volume;
         status.currentTime = time;
