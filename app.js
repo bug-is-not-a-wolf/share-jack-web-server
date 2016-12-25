@@ -21,17 +21,8 @@ var status = {
 app.use(express.static('public'));
 
 app.get('/',function(req, res){
-    res.sendFile(path.join(__dirname + '/public/view/main.html'));
-});
-
-app.get('/user',function(req, res){
-    res.sendFile(path.join(__dirname + '/public/view/user.html'));
-});
-
-app.get('/admin',function(req, res){
     res.sendFile(path.join(__dirname + '/public/view/admin.html'));
 });
-
 
 io.on('connection', function(socket){
     console.log('Connection established...');
