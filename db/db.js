@@ -1,9 +1,11 @@
+'use strict';
 const mongoose = require('mongoose');
 const crypto = require('crypto');
-const db = mongoose.connect("mongodb://jack:black-jack@localhost:27017/share-jack");
-const User = require('./model/user.js');
 const sha3 = require('sha3');
 const argon2 = require('argon2themax');
+const User = require('./model/user.js');
+
+mongoose.connect("mongodb://localhost/share-jack");
 
 module.exports.getUser = function (id) {
     return User.findOne(id)
