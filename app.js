@@ -14,8 +14,10 @@ const httpsOptions = {
 };
 
 const app = express();
-const httpServer = http.createServer(app).listen(80, () => console.log('Server is listening...'));
-const httpsServer = https.createServer(httpsOptions, app).listen(8080, () => console.log('Server is listening...'));
+http.createServer(app).listen(80, () =>
+    console.log('Http server is listening...'));
+const httpsServer = https.createServer(httpsOptions, app).listen(443, () =>
+    console.log('Https server is listening...'));
 const io = require('socket.io')(httpsServer);
 const urlencodedParser = bodyParser.urlencoded({extended: false});
 
