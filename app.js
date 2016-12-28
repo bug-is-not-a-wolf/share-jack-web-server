@@ -4,6 +4,9 @@ const http = require('http');
 const https = require('https');
 const path = require('path');
 const express = require('express');
+const bodyParser = require('body-parser');
+const db = require('./db/db');
+const urlencodedParser = bodyParser.urlencoded({ extended: false });
 
 const httpsOptions = {
     key: fs.readFileSync('keys/private.key'),
@@ -12,12 +15,39 @@ const httpsOptions = {
 };
 
 const app = express();
-const httpServer = http.createServer(app).listen(80);
-const httpsServer = https.createServer(httpsOptions, app).listen(443);
+const httpsServer = https.createServer(httpsOptions, app).listen(8080, function () {
+    console.log('Server is listening...');
+});
 const io = require('socket.io')(httpsServer);
 
-app.use(express.static('public/view'));
 app.use(express.static('public'));
+
+app.get('/', function (req, res) {
+    res.sendFile( __dirname + "/public/view/main.html" );
+});
+
+app.post('/admin', urlencodedParser, function (req, res) {
+   let login = req.body.login;
+   let password = req.body.pass;
+   console.log(login + " " + password);
+   if(login && password) {
+       db.checkUser({login: login, password: password}).then(function (result) {
+           if(result == true) {
+               return res.redirect('/admin')
+           }
+           return res.redirect('/error');
+       });
+   }
+   return res.redirect('/');
+});
+
+app.get('/admin', function (req, res) {
+    res.sendFile( __dirname + "/public/view/admin.html" );
+});
+
+app.get('/error', function (req, res) {
+    res.sendFile( __dirname + "/public/view/error.html" );
+});
 
 app.all('*', function ensureSecure(req, res, next) {
     if (req.secure) return next();

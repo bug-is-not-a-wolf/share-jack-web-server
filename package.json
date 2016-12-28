@@ -2,9 +2,15 @@
   "name": "share-jack--audio-streamer",
   "version": "0.4.0",
   "private": true,
-  "scripts": {"start" : "node app.js"},
+  "scripts": {
+    "start": "node app.js"
+  },
   "dependencies": {
+    "argon2themax": "^1.1.1",
+    "body-parser": "^1.15.2",
     "express": "^4.14.0",
+    "mongoose": "^4.7.5",
+    "sha3": "^1.2.0",
     "socket.io": "latest"
   },
   "main": "app.js",
