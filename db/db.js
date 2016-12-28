@@ -5,45 +5,39 @@ const sha3 = require('sha3');
 const argon2 = require('argon2themax');
 const User = require('./model/user.js');
 
+argon2.getMaxOptions(); // caching
+
+const sha3Hash = sha3.SHA3Hash();
+
+function calcSha3(plaintext, salt) {
+    return sha3Hash.update(plaintext + salt).digest('hex');
+}
+
+function hash(plaintext, salt) {
+    let hash1 = calcSha3(plaintext, salt);
+    return argon2.getMaxOptions()
+        .then(options => argon2.hash(hash1, salt, options));
+}
+
 mongoose.connect("mongodb://localhost/share-jack");
 
-module.exports.getUser = function (id) {
-    return User.findOne(id)
-};
+module.exports.getUser = id => User.findOne(id);
 
-module.exports.checkUser = function (userData) {
-    return User
-        .findOne({login: userData.login})
-        .then(doc => doc.password)
-        .then(password => hash(password))
-        .then(function (hash) {
-            var sha3Encryptor = new sha3.SHA3Hash();
-            sha3Encryptor.update(userData.password);
-            var sha3Hash = sha3Encryptor.digest('hex');
-            return argon2.verify(hash, sha3Hash);
-        })
-        .then(match => match);
-};
-
-function hash(plainText) {
-    var sha3Encryptor = new sha3.SHA3Hash();
-    sha3Encryptor.update(plainText);
-    var sha3Hash = sha3Encryptor.digest('hex');
-    return argon2.getMaxOptions()
-        .then(function () {
-            return argon2.generateSalt();
-        }).then(function (salt) {
-            return argon2.hash(sha3Hash, salt);
+module.exports.checkUser = userData => {
+    return User.findOne({login: userData.login})
+        .then(doc => {
+            let hash1 = calcSha3(doc.login, doc.salt);
+            return argon2.verify(doc.password, hash1);
         });
-}
+};
 
-function createUser(userData) {
-    var user = {
-        login: userData.login
-    };
-    hash(userData.password).then(function (hash) {
-        user.password = hash;
-        console.log(user);
-        return new User(user).save();
-    });
-}
+module.exports.createUser = userData => {
+    console.log("sign up: " + userData.login);
+    argon2.generateSalt()
+        .then(salt => ({
+            login: userData.login,
+            password: hash(userData.password, salt),
+            salt: salt
+        }))
+        .then(user => new User(user).save());
+};
