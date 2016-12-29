@@ -71,4 +71,5 @@ crashlytics-build.properties
 fabric.properties
 
 # Key
-private.key
+/keys/private.key
+/keys/sessionSecret.key
