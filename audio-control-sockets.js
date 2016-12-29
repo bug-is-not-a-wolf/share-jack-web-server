@@ -22,6 +22,8 @@ module.exports = (server) => {
       status.currentTime = time;
     };
 
+    io.emit('status', status);
+
     socket.on('update', _ => io.emit('status', status));
 
     socket.on('disconnect', function () {
