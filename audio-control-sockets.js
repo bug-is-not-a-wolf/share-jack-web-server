@@ -17,35 +17,34 @@ module.exports = (server) => {
       }
     }
 
-    const sendStatus = _ => io.emit('status', status);
     const setPlaying = (isPlaying, time) => {
       status.isPlaying = isPlaying;
       status.currentTime = time;
     };
 
-    socket.on('update', sendStatus);
+    socket.on('update', _ => io.emit('status', status));
 
     socket.on('disconnect', function () {
       console.log('Disconnected...');
     });
 
-    socket.on('play', function (time) {
+    socket.on('play', function () {
       console.log('Playing... ');
       setPlaying(true);
       statusChangeTime = Date.now();
-      sendStatus();
+      io.emit('play', status);
     });
 
-    socket.on('pause', function (time) {
+    socket.on('pause', function () {
       console.log('Stopping... ');
       setPlaying(false);
-      sendStatus();
+      io.emit('pause', status);
     });
 
-    socket.on('volumeChanged', function (volume) {
+    socket.on('volumeChange', function (volume) {
       console.log('Volume was changed to ' + volume);
       status.volume = volume;
-      sendStatus();
+      io.emit('volumeChange', status);
     });
   });
 
