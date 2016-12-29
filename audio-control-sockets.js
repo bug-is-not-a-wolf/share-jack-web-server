@@ -28,14 +28,14 @@ module.exports = (server) => {
       console.log('Disconnected...');
     });
 
-    socket.on('play', function () {
+    socket.on('play', function (time) {
       console.log('Playing... ');
-      setPlaying(true);
+      setPlaying(true, time);
       statusChangeTime = Date.now();
       io.emit('play', status);
     });
 
-    socket.on('pause', function () {
+    socket.on('pause', function (time) {
       console.log('Stopping... ');
       setPlaying(false);
       io.emit('pause', status);

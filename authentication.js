@@ -46,3 +46,19 @@ app.post('/register', function(req, res, next) {
     }
   });
 });
+
+
+if (app.get('env') === 'development') {
+  User.findByUsername('admin', (err, user) => {
+    if (user === null) {
+      console.log('Registering default admin/admin user')
+      User.register(new User({ username: 'admin' }), 'admin', function (err) {
+        if (err) {
+          console.log('Error while admin register!', err);
+        } else {
+          console.log('Admin user registered!');
+        }
+      });
+    }
+  });
+}

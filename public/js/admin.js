@@ -39,7 +39,7 @@ $(function () {
   $('.increaseVolumeButton').on('click', function () {
     audio.volume += 0.1;
     console.log(audio.volume);
-    socket.emit('volumeChange', audio.volume, audio.currentTime);
+    socket.emit('volumeChange', audio.volume);
   });
 
   $('.decreaseVolumeButton').on('click', function () {
